@@ -1,11 +1,14 @@
 package com.luvtocode.cruddemo;
 
 import com.luvtocode.cruddemo.dao.StudentDAO;
+import com.luvtocode.cruddemo.dao.StudentDAOImpl;
 import com.luvtocode.cruddemo.entity.Student;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+
+import java.util.List;
 
 @SpringBootApplication
 public class CruddemoApplication {
@@ -15,10 +18,54 @@ public class CruddemoApplication {
 	}
 
 	@Bean
-	public CommandLineRunner commandLineRunner(StudentDAO studentDAO) {
+	public CommandLineRunner commandLineRunner(StudentDAO studentDAO, StudentDAOImpl studentDAOImpl) {
 		return runner -> {
-			createMultipleStudents(studentDAO);
+//			createStudent(studentDAO);
+
+//			createMultipleStudents(studentDAO);
+
+//			readStudent(studentDAO);
+
+			queryForStudents(studentDAO);
+
 		};
+	}
+
+	private void queryForStudents (StudentDAO studentDAO) {
+
+		// get a list of student
+		List<Student> theStudents = studentDAO.findAll();
+
+		// display list of students
+		for (Student tempStudent : theStudents) {
+			System.out.println(tempStudent);
+		}
+
+
+	}
+
+
+	private void readStudent(StudentDAO studentDAO) {
+
+		// create a student object
+		System.out.println("Creating new student object ...");
+		Student tempStudent = new Student("Daffy", "Duck", "daffy@luv2code.com");
+
+		// save the student
+		System.out.println("Saving the student ...");
+		studentDAO.save(tempStudent);
+
+		// display id of the saved student
+		int theId = tempStudent.getId();
+		System.out.println("Saved student. Generated id: " + theId);
+
+		// retrieve student based on the id: primary key
+		System.out.println("Retrieving student with id " + theId);
+		Student myStudent = studentDAO.findById(theId);
+
+		// display student
+		System.out.println("Found the student: \n" + myStudent);
+
 	}
 
 	private void createMultipleStudents(StudentDAO studentDAO) {

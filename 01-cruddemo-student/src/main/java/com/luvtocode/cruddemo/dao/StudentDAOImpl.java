@@ -22,6 +22,31 @@ public class StudentDAOImpl implements StudentDAO {
         this.entityManager = entityManager;
     }
 
+    //update the DataBase
+    @Override
+    @Transactional
+    public void update(Student theStudent) {
+        entityManager.merge(theStudent);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Integer id) {
+        // retrieve the students
+        Student theStudent = entityManager.find(Student.class, id);
+
+        // delete the student
+        entityManager.remove(theStudent);
+    }
+
+    @Override
+    @Transactional
+    public int delateAll() {
+
+        int numRowsDeleted = entityManager.createQuery("DELETE FROM Student").executeUpdate();
+        return numRowsDeleted;
+    }
+
     // implement save method
     @Override
     @Transactional
@@ -37,10 +62,23 @@ public class StudentDAOImpl implements StudentDAO {
     @Override
     public List<Student> findAll() {
         // create query
-        TypedQuery<Student> theQuery = entityManager.createQuery("FROM Student order by lastName", Student.class);
+        TypedQuery<Student> theQuery = entityManager.createQuery("FROM Student", Student.class);
 
         // return query results
         return theQuery.getResultList();
 
+    }
+
+    @Override
+    public List<Student> findByLastName(String theLastName) {
+        // create query
+        TypedQuery<Student> theQuery = entityManager.createQuery(
+                "FROM Student WHERE lastName = :theData", Student.class);
+
+        // set query parameters
+        theQuery.setParameter("theData", theLastName);
+
+        // return query results
+        return theQuery.getResultList();
     }
 }
